@@ -1,16 +1,47 @@
-# trackify_project
+# Trackify App
 
-A new Flutter project.
+A simple and elegant Flutter application to help users build and track daily habits and goals. This is part of a semester project for CTIS470.
 
-## Getting Started
+## ✨ Features
 
-This project is a starting point for a Flutter application.
+- Add new habits with title and description
+- View a list of all added habits
+- Responsive UI with clean design
+- Animated empty state using Lottie
+- Input validation with error handling
+- Reusable components and structured folder layout
 
-A few resources to get you started if this is your first Flutter project:
+## 📱 Screenshots
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+> (You can add screenshots here after taking them from your app)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🚀 Getting Started
+
+### Prerequisites
+
+- [Flutter SDK](https://docs.flutter.dev/get-started/install)
+- Android Studio / VS Code
+- Dart >= 3.0.0
+
+### Installation
+
+```bash
+git clone https://github.com/yourusername/trackify.git
+cd trackify
+flutter pub get
+flutter run
+```
+
+### 📌 To-Do (Next Increments)
+
+Mark habits as completed
+
+Edit or delete habits
+
+Store habits locally using Hive or Shared Preferences
+
+Add habit streaks and statistics
+
+### 📄 License
+
+This project is licensed for educational use.
