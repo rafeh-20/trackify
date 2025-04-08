@@ -34,10 +34,6 @@ flutter run
 
 ### 📌 To-Do (Next Increments)
 
-Mark habits as completed
-
-Edit or delete habits
-
 Store habits locally using Hive or Shared Preferences
 
 Add habit streaks and statistics
