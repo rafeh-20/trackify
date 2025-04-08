@@ -3,9 +3,9 @@ class Habit {
   final String id;
   final String title;
   final String description;
-  final bool isCompleted;
+  bool isCompleted;
 
-  const Habit({
+  Habit({
     required this.id,
     required this.title,
     required this.description,
