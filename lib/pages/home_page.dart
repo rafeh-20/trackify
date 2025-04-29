@@ -27,9 +27,10 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _toggleHabitCompletion(int index) {
+  void _markHabitComplete(int index) {
     setState(() {
-      habits[index].isCompleted = !habits[index].isCompleted;
+      final today = DateTime.now();
+      habits[index].toggleDayStatus(DateTime(today.year, today.month, today.day));
     });
   }
 
@@ -83,11 +84,9 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Lottie.asset('assets/animations/empty.json',
-                            width: 200),
+                        Lottie.asset('assets/animations/empty.json', width: 200),
                         const SizedBox(height: 16),
-                        const Text('No habits yet!',
-                            style: TextStyle(fontSize: 18)),
+                        const Text('No habits yet!', style: TextStyle(fontSize: 18)),
                       ],
                     ),
                   )
@@ -113,36 +112,37 @@ class _HomePageState extends State<HomePage> {
                           );
                         },
                         child: ListTile(
-                          title: Text(
-                            filteredHabits[index].title,
-                            style: TextStyle(
-                              decoration: filteredHabits[index].isCompleted
-                                  ? TextDecoration.lineThrough
-                                  : null,
-                            ),
-                          ),
-                          subtitle: Text(filteredHabits[index].description),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
+                          title: Text(filteredHabits[index].title),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              GestureDetector(
-                                onTap: () => _toggleHabitCompletion(index),
-                                child: Icon(
-                                  filteredHabits[index].isCompleted
-                                      ? Icons.check_circle
-                                      : Icons.circle_outlined,
-                                  color: filteredHabits[index].isCompleted
-                                      ? Colors.green
-                                      : Colors.grey,
-                                ),
-                              ),
-                              IconButton(
-                                icon:
-                                    const Icon(Icons.delete, color: Colors.red),
-                                onPressed: () => _deleteHabit(index),
-                              ),
+                              Text(filteredHabits[index].description),
+                              Text('Success Rate: ${filteredHabits[index].successRate.toStringAsFixed(2)}%'),
+                              Text('Streak: ${filteredHabits[index].streakCount} days'),
                             ],
                           ),
+                          trailing: GestureDetector(
+                            onTap: () => _markHabitComplete(index), // Use the function here
+                            child: Icon(
+                              habits[index].dayStatuses[DateTime.now()] == DayStatus.positive
+                                  ? Icons.check_circle
+                                  : habits[index].dayStatuses[DateTime.now()] == DayStatus.negative
+                                      ? Icons.cancel
+                                      : Icons.radio_button_unchecked,
+                              color: habits[index].dayStatuses[DateTime.now()] == DayStatus.positive
+                                  ? Colors.green
+                                  : habits[index].dayStatuses[DateTime.now()] == DayStatus.negative
+                                      ? Colors.red
+                                      : Colors.grey,
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/habit_detail',
+                              arguments: filteredHabits[index],
+                            );
+                          },
                         ),
                       );
                     },
