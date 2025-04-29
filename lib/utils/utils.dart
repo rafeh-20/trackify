@@ -1,4 +1,3 @@
-// lib/utils/utils.dart
 import 'package:flutter/material.dart';
 
 void showError(BuildContext context, String message) {
