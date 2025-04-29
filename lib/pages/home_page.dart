@@ -13,6 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Habit> habits = [];
+  String _selectedFilter = 'All';
 
   void _addHabit(Habit habit) {
     setState(() {
@@ -34,74 +35,121 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    List<Habit> filteredHabits = _selectedFilter == 'All'
+        ? habits
+        : habits.where((habit) => habit.category == _selectedFilter).toList();
     return Scaffold(
-      appBar: AppBar(title: const Text('Trackify')),
-      body: habits.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Lottie.asset('assets/animations/empty.json', width: 200),
-                  const SizedBox(height: 16),
-                  const Text('No habits yet!', style: TextStyle(fontSize: 18)),
-                ],
-              ),
-            )
-          : ListView.builder(
-              itemCount: habits.length,
-              itemBuilder: (context, index) {
-                return Dismissible(
-                  key: Key(habits[index].title + index.toString()),
-                  background: Container(
-                    color: Colors.red,
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.only(right: 20.0),
-                    child: const Icon(
-                      Icons.delete,
-                      color: Colors.white,
-                    ),
-                  ),
-                  direction: DismissDirection.endToStart,
-                  onDismissed: (direction) {
-                    _deleteHabit(index);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Habit deleted')),
-                    );
+      appBar: AppBar(
+        title: const Text('Trackify'),
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.sports, color: Colors.blue),
+                  onPressed: () {
+                    setState(() {
+                      _selectedFilter = 'Sports';
+                    });
                   },
-                  child: ListTile(
-                    title: Text(
-                      habits[index].title,
-                      style: TextStyle(
-                        decoration: habits[index].isCompleted
-                            ? TextDecoration.lineThrough
-                            : null,
-                      ),
-                    ),
-                    subtitle: Text(habits[index].description),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.work, color: Colors.orange),
+                  onPressed: () {
+                    setState(() {
+                      _selectedFilter = 'Work';
+                    });
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.list, color: Colors.grey),
+                  onPressed: () {
+                    setState(() {
+                      _selectedFilter = 'All';
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: filteredHabits.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        GestureDetector(
-                          onTap: () => _toggleHabitCompletion(index),
-                          child: Icon(
-                            habits[index].isCompleted
-                                ? Icons.check_circle
-                                : Icons.circle_outlined,
-                            color: habits[index].isCompleted
-                                ? Colors.green
-                                : Colors.grey,
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => _deleteHabit(index),
-                        ),
+                        Lottie.asset('assets/animations/empty.json',
+                            width: 200),
+                        const SizedBox(height: 16),
+                        const Text('No habits yet!',
+                            style: TextStyle(fontSize: 18)),
                       ],
                     ),
+                  )
+                : ListView.builder(
+                    itemCount: filteredHabits.length,
+                    itemBuilder: (context, index) {
+                      return Dismissible(
+                        key: Key(filteredHabits[index].id),
+                        background: Container(
+                          color: Colors.red,
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.only(right: 20.0),
+                          child: const Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                          ),
+                        ),
+                        direction: DismissDirection.endToStart,
+                        onDismissed: (direction) {
+                          _deleteHabit(index);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Habit deleted')),
+                          );
+                        },
+                        child: ListTile(
+                          title: Text(
+                            filteredHabits[index].title,
+                            style: TextStyle(
+                              decoration: filteredHabits[index].isCompleted
+                                  ? TextDecoration.lineThrough
+                                  : null,
+                            ),
+                          ),
+                          subtitle: Text(filteredHabits[index].description),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              GestureDetector(
+                                onTap: () => _toggleHabitCompletion(index),
+                                child: Icon(
+                                  filteredHabits[index].isCompleted
+                                      ? Icons.check_circle
+                                      : Icons.circle_outlined,
+                                  color: filteredHabits[index].isCompleted
+                                      ? Colors.green
+                                      : Colors.grey,
+                                ),
+                              ),
+                              IconButton(
+                                icon:
+                                    const Icon(Icons.delete, color: Colors.red),
+                                onPressed: () => _deleteHabit(index),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
+          ),
+        ],
+      ),
       floatingActionButton: CustomButton(
         text: "add",
         onPressed: () async {

@@ -14,6 +14,7 @@ class AddHabitPage extends StatefulWidget {
 class _AddHabitPageState extends State<AddHabitPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
+  String _selectedCategory = 'Sports';
 
   @override
   void dispose() {
@@ -31,6 +32,7 @@ class _AddHabitPageState extends State<AddHabitPage> {
       id: DateTime.now().toString(),
       title: _titleController.text,
       description: _descController.text,
+      category: _selectedCategory,
     );
     Navigator.pop(context, newHabit);
   }
@@ -50,6 +52,20 @@ class _AddHabitPageState extends State<AddHabitPage> {
             TextField(
               controller: _descController,
               decoration: const InputDecoration(labelText: 'Description'),
+            ),
+            const SizedBox(height: 20),
+            DropdownButtonFormField<String>(
+              value: _selectedCategory,
+              items: const [
+                DropdownMenuItem(value: 'Sports', child: Text('Sports')),
+                DropdownMenuItem(value: 'Work', child: Text('Work')),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  _selectedCategory = value!;
+                });
+              },
+              decoration: const InputDecoration(labelText: 'Category'),
             ),
             const SizedBox(height: 20),
             CustomButton(text: "Save", onPressed: _submit),
