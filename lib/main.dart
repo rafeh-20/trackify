@@ -1,10 +1,9 @@
-// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'pages/home_page.dart';
 import 'pages/add_habit_page.dart';
 import 'pages/habit_detail_page.dart';
-import '../models/habit.dart';
+import 'models/habit.dart';
 
 void main() {
   runApp(const HabitTrackerApp());
@@ -27,7 +26,15 @@ class HabitTrackerApp extends StatelessWidget {
       routes: {
         '/': (context) => const HomePage(),
         '/add': (context) => const AddHabitPage(),
-        '/habit_detail': (context) => HabitDetailPage(habit: ModalRoute.of(context)!.settings.arguments as Habit),
+        '/habit_detail': (context) {
+          final habit = ModalRoute.of(context)!.settings.arguments as Habit;
+          return HabitDetailPage(
+            habit: habit,
+            onHabitUpdated: (updatedHabit) {
+              (context as Element).markNeedsBuild();
+            },
+          );
+        },
       },
     );
   }

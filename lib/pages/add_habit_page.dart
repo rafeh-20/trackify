@@ -1,4 +1,3 @@
-// lib/pages/add_habit_page.dart
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/habit.dart';
@@ -62,6 +61,8 @@ class _AddHabitPageState extends State<AddHabitPage> {
               items: const [
                 DropdownMenuItem(value: 'Sports', child: Text('Sports')),
                 DropdownMenuItem(value: 'Work', child: Text('Work')),
+                DropdownMenuItem(value: 'Education', child: Text('Education')),
+                DropdownMenuItem(value: 'Other', child: Text('Other')),
               ],
               onChanged: (value) {
                 setState(() {

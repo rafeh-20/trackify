@@ -4,21 +4,9 @@ import '../custom_widgets/habit_calendar.dart';
 
 class HabitDetailPage extends StatelessWidget {
   final Habit habit;
+  final void Function(dynamic) onHabitUpdated;
 
-  const HabitDetailPage({super.key, required this.habit});
-
-  void _markAllDays(BuildContext context, DayStatus status) {
-    final now = DateTime.now();
-    for (var date = habit.startDate;
-        date.isBefore(now) || date.isAtSameMomentAs(now);
-        date = date.add(const Duration(days: 1))) {
-      habit.dayStatuses[date] = status;
-    }
-    habit.updateStreak();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('All days marked as ${status == DayStatus.positive ? "positive" : "negative"}')),
-    );
-  }
+  const HabitDetailPage({super.key, required this.habit, required this.onHabitUpdated});
 
   @override
   Widget build(BuildContext context) {
@@ -31,24 +19,13 @@ class HabitDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Success Rate: ${habit.successRate.toStringAsFixed(2)}%', style: const TextStyle(fontSize: 18)),
-            Text('Current Streak: ${habit.streakCount} days', style: const TextStyle(fontSize: 18)),
             const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () => _markAllDays(context, DayStatus.positive),
-                  child: const Text('Mark All Positive'),
-                ),
-                ElevatedButton(
-                  onPressed: () => _markAllDays(context, DayStatus.negative),
-                  child: const Text('Mark All Negative'),
-                ),
-              ],
+            Expanded(
+              child: HabitCalendar(
+                habit: habit,
+                onHabitUpdated: () => onHabitUpdated(null),
+              ),
             ),
-            const SizedBox(height: 20),
-            Expanded(child: HabitCalendar(habit: habit)),
           ],
         ),
       ),

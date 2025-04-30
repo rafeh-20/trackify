@@ -1,8 +1,9 @@
-// lib/pages/home_page.dart
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import '../custom_widgets/custom_button.dart';
 import '../models/habit.dart';
+import '../pages/habit_detail_page.dart';
+import '../pages/motivation_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -30,7 +31,8 @@ class _HomePageState extends State<HomePage> {
   void _markHabitComplete(int index) {
     setState(() {
       final today = DateTime.now();
-      habits[index].toggleDayStatus(DateTime(today.year, today.month, today.day));
+      final dateOnly = DateTime(today.year, today.month, today.day);
+      habits[index].toggleDayStatus(dateOnly);
     });
   }
 
@@ -43,6 +45,20 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Trackify'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.lightbulb, color: Colors.yellow),
+            tooltip: 'Motivation',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MotivationPage(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -51,29 +67,60 @@ class _HomePageState extends State<HomePage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.sports, color: Colors.blue),
-                  onPressed: () {
-                    setState(() {
-                      _selectedFilter = 'Sports';
-                    });
-                  },
+                Tooltip(
+                  message: 'Sports',
+                  child: IconButton(
+                    icon: const Icon(Icons.sports, color: Colors.blue),
+                    onPressed: () {
+                      setState(() {
+                        _selectedFilter = 'Sports';
+                      });
+                    },
+                  ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.work, color: Colors.orange),
-                  onPressed: () {
-                    setState(() {
-                      _selectedFilter = 'Work';
-                    });
-                  },
+                Tooltip(
+                  message: 'Work',
+                  child: IconButton(
+                    icon: const Icon(Icons.work, color: Colors.orange),
+                    onPressed: () {
+                      setState(() {
+                        _selectedFilter = 'Work';
+                      });
+                    },
+                  ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.list, color: Colors.grey),
-                  onPressed: () {
-                    setState(() {
-                      _selectedFilter = 'All';
-                    });
-                  },
+                Tooltip(
+                  message: 'Education',
+                  child: IconButton(
+                    icon: const Icon(Icons.school, color: Colors.purple),
+                    onPressed: () {
+                      setState(() {
+                        _selectedFilter = 'Education';
+                      });
+                    },
+                  ),
+                ),
+                Tooltip(
+                  message: 'Other',
+                  child: IconButton(
+                    icon: const Icon(Icons.category, color: Colors.brown),
+                    onPressed: () {
+                      setState(() {
+                        _selectedFilter = 'Other';
+                      });
+                    },
+                  ),
+                ),
+                Tooltip(
+                  message: 'All',
+                  child: IconButton(
+                    icon: const Icon(Icons.list, color: Colors.grey),
+                    onPressed: () {
+                      setState(() {
+                        _selectedFilter = 'All';
+                      });
+                    },
+                  ),
                 ),
               ],
             ),
@@ -122,25 +169,31 @@ class _HomePageState extends State<HomePage> {
                             ],
                           ),
                           trailing: GestureDetector(
-                            onTap: () => _markHabitComplete(index), // Use the function here
+                            onTap: () => _markHabitComplete(index),
                             child: Icon(
-                              habits[index].dayStatuses[DateTime.now()] == DayStatus.positive
+                              filteredHabits[index].dayStatuses[DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)] == DayStatus.positive
                                   ? Icons.check_circle
-                                  : habits[index].dayStatuses[DateTime.now()] == DayStatus.negative
+                                  : filteredHabits[index].dayStatuses[DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)] == DayStatus.negative
                                       ? Icons.cancel
                                       : Icons.radio_button_unchecked,
-                              color: habits[index].dayStatuses[DateTime.now()] == DayStatus.positive
+                              color: filteredHabits[index].dayStatuses[DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)] == DayStatus.positive
                                   ? Colors.green
-                                  : habits[index].dayStatuses[DateTime.now()] == DayStatus.negative
+                                  : filteredHabits[index].dayStatuses[DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)] == DayStatus.negative
                                       ? Colors.red
                                       : Colors.grey,
                             ),
                           ),
                           onTap: () {
-                            Navigator.pushNamed(
+                            Navigator.push(
                               context,
-                              '/habit_detail',
-                              arguments: filteredHabits[index],
+                              MaterialPageRoute(
+                                builder: (context) => HabitDetailPage(
+                                  habit: filteredHabits[index],
+                                  onHabitUpdated: (dynamic _) {
+                                    setState(() {});
+                                  },
+                                ),
+                              ),
                             );
                           },
                         ),

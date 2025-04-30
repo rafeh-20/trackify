@@ -1,4 +1,3 @@
-// lib/models/habit.dart
 enum DayStatus { empty, positive, negative }
 
 class Habit {
@@ -7,7 +6,7 @@ class Habit {
   final String description;
   final String category;
   final DateTime startDate;
-  Map<DateTime, DayStatus> dayStatuses; // Tracks the status of each day
+  Map<DateTime, DayStatus> dayStatuses;
   int streakCount;
   int totalDays;
 
@@ -17,35 +16,50 @@ class Habit {
     required this.description,
     required this.category,
     required this.startDate,
-    this.dayStatuses = const {},
+    Map<DateTime, DayStatus>? dayStatuses,
     this.streakCount = 0,
     this.totalDays = 0,
-  });
+  }) : dayStatuses = dayStatuses ?? {};
 
   double get successRate {
-    final positiveDays = dayStatuses.values.where((status) => status == DayStatus.positive).length;
-    return totalDays == 0 ? 0 : (positiveDays / totalDays) * 100;
-  }
+  final totalTrackedDays = DateTime.now().difference(startDate).inDays + 1;
+  final positiveDays = dayStatuses.values.where((status) => status == DayStatus.positive).length;
+  return totalTrackedDays == 0 ? 0 : (positiveDays / totalTrackedDays) * 100;
+}
 
   void toggleDayStatus(DateTime date) {
-    dayStatuses[date] = dayStatuses[date] == DayStatus.positive
+    final dateOnly = DateTime(date.year, date.month, date.day);
+    final currentStatus = dayStatuses[dateOnly] ?? DayStatus.empty;
+
+    dayStatuses[dateOnly] = currentStatus == DayStatus.positive
         ? DayStatus.negative
-        : dayStatuses[date] == DayStatus.negative
+        : currentStatus == DayStatus.negative
             ? DayStatus.empty
             : DayStatus.positive;
-    updateStreak();
+
+    if (dayStatuses[dateOnly] == DayStatus.negative) {
+      updateStreak(reset: true);
+    } else {
+      updateStreak(reset: false);
+    }
   }
 
-  void updateStreak() {
+  void updateStreak({bool reset = false}) {
+    if (reset) {
+      streakCount = 0;
+      return;
+    }
+
     streakCount = 0;
     final sortedDates = dayStatuses.keys.toList()..sort();
     int currentStreak = 0;
 
     for (int i = 0; i < sortedDates.length; i++) {
-      if (dayStatuses[sortedDates[i]] == DayStatus.positive) {
+      final status = dayStatuses[sortedDates[i]] ?? DayStatus.negative;
+      if (status == DayStatus.positive) {
         currentStreak++;
         streakCount = currentStreak > streakCount ? currentStreak : streakCount;
-      } else {
+      } else if (status == DayStatus.negative) {
         currentStreak = 0;
       }
     }
