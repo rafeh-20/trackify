@@ -31,7 +31,8 @@ class _AddHabitPageState extends State<AddHabitPage> {
     }
     final newHabit = Habit(
       id: DateTime.now().toString(),
-      title: _titleController.text,
+      name: _titleController.text,
+      isCompleted: false,
       description: _descController.text,
       category: _selectedCategory,
       startDate: _startDate!,

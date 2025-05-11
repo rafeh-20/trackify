@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:trackify_project/services/database_service.dart';
 import '../models/habit.dart';
 
 class HabitCalendar extends StatefulWidget {
@@ -26,13 +28,22 @@ class HabitCalendarState extends State<HabitCalendar> {
         return !day.isAfter(DateTime.now()) &&
             !day.isBefore(widget.habit.startDate);
       },
-      onDaySelected: (selectedDay, focusedDay) {
+      onDaySelected: (selectedDay, focusedDay) async {
         setState(() {
           final dateOnly =
               DateTime(selectedDay.year, selectedDay.month, selectedDay.day);
           widget.habit.toggleDayStatus(dateOnly);
-          widget.onHabitUpdated();
         });
+
+        // Update the habit in Firestore
+        await DatabaseService().updateHabit(
+          FirebaseAuth.instance.currentUser!.uid,
+          widget.habit.id,
+          widget.habit.toMap(),
+        );
+
+        // Notify the parent widget about the update
+        widget.onHabitUpdated();
       },
       calendarBuilders: CalendarBuilders(
         defaultBuilder: (context, day, focusedDay) {
@@ -53,8 +64,7 @@ class HabitCalendarState extends State<HabitCalendar> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(
-                  height: 4),
+              const SizedBox(height: 4),
               Icon(
                 status == DayStatus.positive
                     ? Icons.check_circle
