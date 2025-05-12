@@ -6,7 +6,8 @@ class HabitDetailPage extends StatelessWidget {
   final Habit habit;
   final void Function(dynamic) onHabitUpdated;
 
-  const HabitDetailPage({super.key, required this.habit, required this.onHabitUpdated});
+  const HabitDetailPage(
+      {super.key, required this.habit, required this.onHabitUpdated});
 
   @override
   Widget build(BuildContext context) {

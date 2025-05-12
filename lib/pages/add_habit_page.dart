@@ -25,7 +25,9 @@ class _AddHabitPageState extends State<AddHabitPage> {
   }
 
   void _submit() {
-    if (_titleController.text.isEmpty || _descController.text.isEmpty || _startDate == null) {
+    if (_titleController.text.isEmpty ||
+        _descController.text.isEmpty ||
+        _startDate == null) {
       showError(context, "Please fill in all fields");
       return;
     }
@@ -78,7 +80,9 @@ class _AddHabitPageState extends State<AddHabitPage> {
                 const Text('Start Date:'),
                 const SizedBox(width: 10),
                 Text(
-                  _startDate == null ? 'Select a date' : DateFormat.yMMMd().format(_startDate!),
+                  _startDate == null
+                      ? 'Select a date'
+                      : DateFormat.yMMMd().format(_startDate!),
                 ),
                 IconButton(
                   icon: const Icon(Icons.calendar_today),

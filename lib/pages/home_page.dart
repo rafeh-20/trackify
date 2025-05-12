@@ -30,7 +30,24 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Trackify'),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'assets/animations/Trackify.png',
+              height: 32,
+            ),
+            const SizedBox(width: 25),
+            const Text(
+              'Trackify',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
         centerTitle: true,
         actions: [
           IconButton(
