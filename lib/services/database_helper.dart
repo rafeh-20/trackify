@@ -8,7 +8,6 @@ class DatabaseHelper {
   static const _dbName = 'HabitDatabase.db';
   static const _dbVersion = 1;
   static const _tableName = 'habits';
-
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
 
