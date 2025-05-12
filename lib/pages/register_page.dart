@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/animation.dart';
 import '../services/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
