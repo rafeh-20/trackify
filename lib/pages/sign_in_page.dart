@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/animation.dart';
-import '../services/auth_service.dart';
+//import '../services/auth_service.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -14,7 +13,7 @@ class _SignInPageState extends State<SignInPage>
     with SingleTickerProviderStateMixin {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final AuthService _authService = AuthService();
+  // final AuthService _authService = AuthService();
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
@@ -47,16 +46,13 @@ class _SignInPageState extends State<SignInPage>
     }
 
     try {
-      // Attempt to sign in with email and password
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
-      // If successful, the StreamBuilder in main.dart will detect the change
       Navigator.pushReplacementNamed(context, '/');
     } catch (e) {
-      // Show error message if sign-in fails
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Sign in failed: ${e.toString()}')),
       );
